@@ -1,114 +1,125 @@
-
-import pyttsx3 #pip install pyttsx3
-import speech_recognition as sr #pip install speechRecognition
+from tkinter import *
+import pyttsx3  # pip install pyttsx3
+import speech_recognition as sr  # pip install speechRecognition
 import datetime
-import wikipedia #pip install wikipedia
+import wikipedia  # pip install wikipedia
 import webbrowser
 import os
-import smtplib
-
-engine = pyttsx3.init('sapi5')
-voices = engine.getProperty('voices')
-# print(voices[1].id)
-engine.setProperty('voice', voices[0].id)
 
 
-def speak(audio):
-    engine.say(audio)
-    engine.runAndWait()
+root = Tk()
+root.geometry("600x600")
+canvas = Canvas(root, width = 550, height = 550)
+canvas.pack()
+img = PhotoImage(file="C:\Users\Ganpat\Desktop\jarvis\jarvis.png")
+canvas.create_image(20,20, anchor=NW, image=img)
 
 
-def wishMe():
-    hour = int(datetime.datetime.now().hour)
-    if hour>=0 and hour<12:
-        speak("Good Morning!")
+def jar():
+    engine = pyttsx3.init('sapi5')  # it takes the voice from windows
+    voices = engine.getProperty('voices')
+    # print(voices[1].id)
+    engine.setProperty('voice', voices[0].id)
 
-    elif hour>=12 and hour<18:
-        speak("Good Afternoon!")
+    def speak(audio):
+        engine.say(audio)
+        engine.runAndWait()
 
-    else:
-        speak("Good Evening!")
+    def wishMe():
+        hour = int(datetime.datetime.now().hour)
+        if hour >= 0 and hour < 12:
+            speak("Good Morning!")
 
-    speak("I am Jarvis Sir. Please tell me how may I help you")
+        elif hour >= 12 and hour < 18:
+            speak("Good Afternoon!")
 
-def takeCommand():
-    #It takes microphone input from the user and returns string output
+        else:
+            speak("Good Evening!")
 
-    r = sr.Recognizer()
-    with sr.Microphone() as source:
-        print("Listening...")
-        r.pause_threshold = 0.8
-        audio = r.listen(source)
+        speak("I am Jarvis Sir. Please tell me how may I help you ")
 
-    try:
-        print("Recognizing...")
-        query = r.recognize_google(audio, language='en-in')
-        print(f"User said: {query}\n")
+    def takeCommand():
+        # It takes microphone input from the user and returns string output
 
-    except Exception as e:
-        # print(e)
-        print("Say that again please...")
-        return "None"
-    return query
+        r = sr.Recognizer()
+        with sr.Microphone() as source:
+            print("Listening...")
+            r.pause_threshold = 1
+            audio = r.listen(source)
 
-def sendEmail(to, content):
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.ehlo()
-    server.starttls()
-    server.login('youremail@gmail.com', 'your-password')
-    server.sendmail('youremail@gmail.com', to, content)
-    server.close()
+        try:
+            print("Recognizing...")
+            query = r.recognize_google(audio, language='en-in')
+            print(f"User said: {query}\n")
 
-if __name__ == "__main__":
-    wishMe()
-    while True:
-    # if 1:
-        query = takeCommand().lower()
+        except Exception as e:
+            # print(e)
+            print("Say that again please...")
+            return "None"
+        return query
 
-        # Logic for executing tasks based on query
-        if 'wikipedia' in query:
-            speak('Searching Wikipedia...')
-            query = query.replace("wikipedia", "")
-            results = wikipedia.summary(query, sentences=2)
-            speak("According to Wikipedia")
-            print(results)
-            speak(results)
+    if __name__ == "__main__":
+        speak(" Activating jarvis ")
+        wishMe()
+        while True:
 
-        elif 'open youtube' in query:
-            webbrowser.open("youtube.com")
+            query = takeCommand().lower()
 
-        elif 'open google' in query:
-            webbrowser.open("google.com")
+            # Logic for executing tasks based on query
+            if 'wikipedia' in query:
+                speak('Searching Wikipedia...')
+                query = query.replace("wikipedia", "")
+                results = wikipedia.summary(query, sentences=2)
+                speak("According to Wikipedia")
+                print(results)
+                speak(results)
 
-        elif 'open stackoverflow' in query:
-            webbrowser.open("stackoverflow.com")
+            elif 'open youtube' in query:
+                speak(" opening youtube ")
+                webbrowser.open("youtube.com")
 
+            elif 'open google' in query:
+                speak(" opening google ")
+                webbrowser.open("google.com")
 
-        elif 'play music' in query:
-            music_dir = 'D:\\Non Critical\\songs\\Favorite Songs2'
-            songs = os.listdir(music_dir)
-            print(songs)
-            os.startfile(os.path.join(music_dir, songs[0]))
-
-        elif 'the time' in query:
-            strTime = datetime.datetime.now().strftime("%H:%M:%S")
-            speak(f"Sir, the time is {strTime}")
-
-        elif 'open code' in query:
-            codePath = "C:\\Users\\Haris\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
-            os.startfile(codePath)
-
-        elif 'email to harry' in query:
-            try:
-                speak("What should I say?")
-                content = takeCommand()
-                to = "harryyourEmail@gmail.com"
-                sendEmail(to, content)
-                speak("Email has been sent!")
-            except Exception as e:
-                print(e)
-                speak("Sorry my friend harry bhai. I am not able to send this email")
+            elif 'open whatsapp' in query:
+                speak(" opening whatsapp ")
+                webbrowser.open("web.whatsapp.com")
 
 
+            elif 'play music' in query:
+                speak(" Playing music for you . Enjoy your music ")
+                music_dir = 'C:\Users\Ganpat\Desktop\jarvis\jarvis\songs'
+                songs = os.listdir(music_dir)
+                print(songs)
+                os.startfile(os.path.join(music_dir, songs[0]))
 
-saasb
+            elif 'open document' in query:
+                speak(" opening document ")
+                music_dir = 'C:\Users\Ganpat\Desktop\jarvis\jarvis\docx'
+                doc = os.listdir(music_dir)
+                print(doc)
+                os.startfile(os.path.join(music_dir, doc[0]))
+
+
+            elif 'the time' in query:
+                strTime = datetime.datetime.now().strftime("%H:%M:%S")
+                speak(f"Sir, the time is {strTime}")
+
+            elif 'open Chrome' in query:
+                codePath = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+                os.startfile(codePath)
+
+            elif 'quit' in query or 'bye' in query or 'deactivate' in query:
+                speak("Power mode off")
+                exit()
+
+
+
+f1=Frame(root , borderwidth= 5 , bg="red" , relief=SUNKEN)
+f1.pack()
+
+btn= Button(root , text="start jarvis" , padx=20 , pady=20 , command= jar)
+btn.pack()
+
+root.mainloop()
